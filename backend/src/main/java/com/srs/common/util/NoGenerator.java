@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * 业务单号生成器: 前缀 + yyyyMMddHHmmss + 4位随机
@@ -15,7 +16,7 @@ public class NoGenerator {
     private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
 
     public static String next(String prefix) {
-        int rand = (int) (Math.random() * 9000) + 1000;
+        int rand = ThreadLocalRandom.current().nextInt(1000, 10000);
         return prefix + LocalDateTime.now().format(FMT) + rand;
     }
 

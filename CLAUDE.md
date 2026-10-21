@@ -40,7 +40,9 @@ backend/fe-smoke.sh          # 前端依赖接口冒烟:校验前端实际调用
 
 包根 `com.srs`,启动类 `SrsApplication`(`@MapperScan("com.srs.**.mapper")`,无 XML mapper,`resources` 下仅 `application.yml`)。
 
-- `modules/{system,base,iot,video,sec,workorder,msg,stat,file}` — 9 个业务模块,各自 controller/service/entity/mapper 四层
+- `modules/{system,base,iot,video,sec,workorder,msg,stat,file,patrol,repair,ai}` — 12 个业务模块,各自 controller/service/entity/mapper 四层
+- `patrol`(巡更点位/路线/计划/记录)、`repair`(报修投诉)、`ai`(AI 场景/事件) 为 2026-10 补齐;`iot` 下含设备类型 CRUD 与设备事件
+- 定时任务(`@EnableScheduling`):`PatrolScheduleJob` 每日 00:05 判定漏巡,`DailySummaryJob` 每日 00:10 生成日汇总
 - `common/core` — 统一响应 `R<T>`(code 复用 HTTP 语义,200 成功)、`PageQuery`/`PageResult` 分页、`BaseEntity`(create_by/create_time 等审计字段,由 `FillMetaObjectHandler` 自动填充)、`DelEntity`(`@TableLogic` 逻辑删除)
 - `common/anno/OperLog` + `OperLogAspect` — 写操作加 `@OperLog(module=..., businessType=...)` 记审计日志
 - `common/util/AesCrypto` — 业主手机/证件等敏感字段 AES 加密(密钥 `srs.crypto.aes-key`)

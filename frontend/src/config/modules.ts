@@ -1,4 +1,4 @@
-import { sysApi, baseApi, iotApi, videoApi, secApi, msgApi, alarmApi } from '@/api'
+import { sysApi, baseApi, iotApi, videoApi, secApi, msgApi, alarmApi, patrolApi, aiApi } from '@/api'
 import { useAppStore } from '@/store/app'
 
 const community = () => useAppStore().communityId
@@ -356,5 +356,95 @@ export const moduleConfig: Record<string, ModuleConfig> = {
       { prop: 'readFlag', label: '已读', width: 80, formatter: (_: any, r: any) => (r.readFlag === 1 ? '已读' : '未读') },
       { prop: 'createTime', label: '时间', minWidth: 160 }
     ]
+  },
+  '/patrol/point': {
+    title: '巡更点位',
+    fetch: (p) => wrap((q) => patrolApi.points(q))(p),
+    columns: [
+      { prop: 'pointName', label: '点位名称', width: 160 },
+      { prop: 'pointCode', label: '点位编码', width: 130 },
+      { prop: 'location', label: '位置描述', minWidth: 180 },
+      { prop: 'nfcCode', label: 'NFC编码', width: 140 },
+      { prop: 'status', label: '状态', width: 80, formatter: (_: any, r: any) => (r.status === 1 ? '启用' : '停用') }
+    ],
+    searchFields: [{ prop: 'pointName', label: '点位名称' }],
+    formFields: [
+      { prop: 'pointCode', label: '点位编码', required: true, type: 'input' },
+      { prop: 'pointName', label: '点位名称', required: true, type: 'input' },
+      { prop: 'location', label: '位置描述', type: 'input' },
+      { prop: 'nfcCode', label: 'NFC编码', type: 'input' },
+      { prop: 'longitude', label: '经度', type: 'number' },
+      { prop: 'latitude', label: '纬度', type: 'number' },
+      { prop: 'status', label: '状态', type: 'select', options: [{ value: 1, label: '启用' }, { value: 0, label: '停用' }] },
+      { prop: 'remark', label: '备注', type: 'textarea' }
+    ],
+    createApi: patrolApi.savePoint,
+    updateApi: patrolApi.savePoint,
+    removeApi: patrolApi.removePoint,
+    addText: '新增点位'
+  },
+  '/access/blacklist': {
+    title: '黑名单',
+    fetch: (p) => wrap((q) => secApi.blacklists(q))(p),
+    columns: [
+      { prop: 'targetName', label: '姓名/车牌', width: 140 },
+      { prop: 'targetId', label: '身份证/车牌号', width: 180 },
+      { prop: 'blacklistType', label: '类型', width: 90, formatter: (_: any, r: any) => (r.blacklistType === 1 ? '人员' : '车辆') },
+      { prop: 'reason', label: '拉黑原因', minWidth: 180 },
+      { prop: 'effectiveStart', label: '生效开始', width: 120 },
+      { prop: 'effectiveEnd', label: '生效结束', width: 120 },
+      { prop: 'status', label: '状态', width: 80, formatter: (_: any, r: any) => (r.status === 1 ? '启用' : '停用') }
+    ],
+    searchFields: [
+      { prop: 'keyword', label: '姓名/车牌' },
+      { prop: 'blacklistType', label: '类型', type: 'select', options: [{ label: '人员', value: 1 }, { label: '车辆', value: 2 }] }
+    ],
+    formFields: [
+      { prop: 'blacklistType', label: '类型', required: true, type: 'select', options: [{ label: '人员', value: 1 }, { label: '车辆', value: 2 }] },
+      { prop: 'targetName', label: '姓名/车牌', type: 'input' },
+      { prop: 'targetId', label: '身份证/车牌号', required: true, type: 'input' },
+      { prop: 'reason', label: '拉黑原因', type: 'textarea' },
+      { prop: 'effectiveStart', label: '生效开始', type: 'input' },
+      { prop: 'effectiveEnd', label: '生效结束', type: 'input' },
+      { prop: 'status', label: '状态', type: 'select', options: [{ label: '启用', value: 1 }, { label: '停用', value: 0 }] }
+    ],
+    createApi: secApi.saveBlacklist,
+    updateApi: secApi.saveBlacklist,
+    removeApi: secApi.removeBlacklist,
+    addText: '新增黑名单'
+  },
+  '/ai/scene': {
+    title: 'AI场景',
+    fetch: (p) => wrap((q) => aiApi.scenes(q))(p),
+    columns: [
+      { prop: 'sceneName', label: '场景名称', width: 160 },
+      { prop: 'sceneCode', label: '场景编码', width: 140 },
+      { prop: 'algorithmType', label: '算法类型', width: 140 },
+      { prop: 'threshold', label: '置信度阈值', width: 110 },
+      { prop: 'alarmLevel', label: '告警级别', width: 100, formatter: (_: any, r: any) => (m({ 1: '紧急', 2: '重要', 3: '一般' })[r.alarmLevel] || r.alarmLevel) },
+      { prop: 'status', label: '状态', width: 80, formatter: (_: any, r: any) => (r.status === 1 ? '启用' : '停用') }
+    ],
+    searchFields: [{ prop: 'sceneName', label: '场景名称' }],
+    formFields: [
+      { prop: 'sceneCode', label: '场景编码', required: true, type: 'input' },
+      { prop: 'sceneName', label: '场景名称', required: true, type: 'input' },
+      { prop: 'algorithmType', label: '算法类型', type: 'select', options: [
+        { label: '人脸识别', value: 'face' }, { label: '区域入侵', value: 'intrusion' },
+        { label: '烟火识别', value: 'smoke' }, { label: '离岗检测', value: 'absence' },
+        { label: '人员徘徊', value: 'loiter' }
+      ] },
+      { prop: 'channelIds', label: '通道ID', type: 'input' },
+      { prop: 'threshold', label: '置信度阈值', type: 'number' },
+      { prop: 'alarmLevel', label: '告警级别', type: 'select', options: [
+        { label: '紧急', value: 1 }, { label: '重要', value: 2 }, { label: '一般', value: 3 }
+      ] },
+      { prop: 'enableTimeStart', label: '启用开始', type: 'input' },
+      { prop: 'enableTimeEnd', label: '启用结束', type: 'input' },
+      { prop: 'status', label: '状态', type: 'select', options: [{ label: '启用', value: 1 }, { label: '停用', value: 0 }] }
+    ],
+    createApi: aiApi.saveScene,
+    updateApi: aiApi.saveScene,
+    removeApi: aiApi.removeScene,
+    addText: '新增场景'
   }
 }

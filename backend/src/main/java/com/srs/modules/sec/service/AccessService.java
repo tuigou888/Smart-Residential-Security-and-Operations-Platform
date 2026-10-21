@@ -34,6 +34,7 @@ public class AccessService extends ServiceImpl<SecAccessRecordMapper, SecAccessR
 
     private final IotDeviceMapper deviceMapper;
     private final SecAccessPermissionMapper permissionMapper;
+    private final BlacklistService blacklistService;
 
     public List<IotDevice> accessDevices(Long communityId) {
         return deviceMapper.selectList(new LambdaQueryWrapper<IotDevice>()
@@ -72,6 +73,17 @@ public class AccessService extends ServiceImpl<SecAccessRecordMapper, SecAccessR
      * 一期指令下发为记录式(接入层对接后替换为真实下发)
      */
     public void remoteOpen(Long deviceId, Long communityId, String reason) {
+        remoteOpen(deviceId, communityId, reason, null, null);
+    }
+
+    /**
+     * 远程开门(带黑名单校验)
+     *
+     * @param targetType 1人员 2车辆, 可为空
+     * @param targetId   身份证/车牌号, 可为空
+     */
+    public void remoteOpen(Long deviceId, Long communityId, String reason,
+                           Integer targetType, String targetId) {
         IotDevice device = deviceMapper.selectById(deviceId);
         if (device == null) {
             throw BizException.notFound("门禁设备不存在: " + deviceId);
@@ -79,8 +91,13 @@ public class AccessService extends ServiceImpl<SecAccessRecordMapper, SecAccessR
         if (!List.of("guard", "face").contains(device.getDeviceType())) {
             throw BizException.badRequest("该设备不是门禁设备");
         }
+        Long effectiveCommunityId = communityId == null ? device.getCommunityId() : communityId;
+        if (blacklistService.isBlocked(effectiveCommunityId,
+                targetType == null ? 1 : targetType, targetId)) {
+            throw BizException.forbidden("该目标在黑名单，禁止开门");
+        }
         SecAccessRecord record = new SecAccessRecord();
-        record.setCommunityId(communityId == null ? device.getCommunityId() : communityId);
+        record.setCommunityId(effectiveCommunityId);
         record.setDeviceId(deviceId);
         record.setPersonName(SecurityUtils.getRealName());
         record.setOpenMethod(5);

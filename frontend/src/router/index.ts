@@ -17,7 +17,15 @@ const componentMap: Record<string, () => Promise<any>> = {
   'stat/access/index': () => import('@/views/stat/access/index.vue'),
   'stat/device/index': () => import('@/views/stat/device/index.vue'),
   'system/menu/index': () => import('@/views/system/menu/index.vue'),
-  'access/remote/index': () => import('@/views/access/remote/index.vue')
+  'access/remote/index': () => import('@/views/access/remote/index.vue'),
+  'patrol/route/index': () => import('@/views/patrol/route/index.vue'),
+  'patrol/plan/index': () => import('@/views/patrol/plan/index.vue'),
+  'patrol/record/index': () => import('@/views/patrol/record/index.vue'),
+  'repair/list/index': () => import('@/views/repair/list/index.vue'),
+  'msg/template/index': () => import('@/views/msg/template/index.vue'),
+  'iot/event/index': () => import('@/views/iot/event/index.vue'),
+  'ai/event/index': () => import('@/views/ai/event/index.vue'),
+  'stat/daily/index': () => import('@/views/stat/daily/index.vue')
 }
 
 const GenericView = () => import('@/views/generic/index.vue')

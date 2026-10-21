@@ -115,6 +115,67 @@ INSERT INTO sys_menu(id, parent_id, menu_name, menu_type, path, component, perms
 (105, 32, '设备类型修改', 'F', NULL, NULL, 'iot:deviceType:edit',   NULL, 2, 0, 1),
 (106, 32, '设备类型删除', 'F', NULL, NULL, 'iot:deviceType:remove', NULL, 3, 0, 1);
 
+-- 巡更管理
+INSERT INTO sys_menu(id, parent_id, menu_name, menu_type, path, component, perms, icon, order_num, visible, status) VALUES
+(110, 0,   '巡更管理', 'M', '/patrol',        NULL,                     NULL,                  'Compass', 22, 1, 1),
+(111, 110, '巡更点位', 'C', '/patrol/point',  'patrol/point/index',     'patrol:point:list',   'Location', 1, 1, 1),
+(112, 110, '巡更路线', 'C', '/patrol/route',  'patrol/route/index',     'patrol:route:list',   'Guide',    2, 1, 1),
+(113, 110, '巡更计划', 'C', '/patrol/plan',   'patrol/plan/index',      'patrol:plan:list',    'Calendar', 3, 1, 1),
+(114, 110, '巡更记录', 'C', '/patrol/record', 'patrol/record/index',    'patrol:record:list',  'Finished', 4, 1, 1),
+(115, 111, '点位新增', 'F', NULL, NULL, 'patrol:point:add',    NULL, 1, 0, 1),
+(116, 111, '点位修改', 'F', NULL, NULL, 'patrol:point:edit',   NULL, 2, 0, 1),
+(117, 111, '点位删除', 'F', NULL, NULL, 'patrol:point:remove', NULL, 3, 0, 1),
+(118, 112, '路线新增', 'F', NULL, NULL, 'patrol:route:add',    NULL, 1, 0, 1),
+(119, 112, '路线修改', 'F', NULL, NULL, 'patrol:route:edit',   NULL, 2, 0, 1),
+(120, 112, '路线删除', 'F', NULL, NULL, 'patrol:route:remove', NULL, 3, 0, 1),
+(121, 113, '计划新增', 'F', NULL, NULL, 'patrol:plan:add',     NULL, 1, 0, 1),
+(122, 113, '计划修改', 'F', NULL, NULL, 'patrol:plan:edit',    NULL, 2, 0, 1),
+(123, 113, '计划删除', 'F', NULL, NULL, 'patrol:plan:remove',  NULL, 3, 0, 1),
+(124, 114, '巡更打卡', 'F', NULL, NULL, 'patrol:record:add',   NULL, 1, 0, 1);
+
+-- 报修管理
+INSERT INTO sys_menu(id, parent_id, menu_name, menu_type, path, component, perms, icon, order_num, visible, status) VALUES
+(130, 0,   '报修管理', 'M', '/repair',      NULL,                NULL,                'Tools',    23, 1, 1),
+(131, 130, '报修列表', 'C', '/repair/list', 'repair/list/index', 'repair:list',       'List',     1, 1, 1),
+(132, 131, '报修新增', 'F', NULL, NULL, 'repair:add',    NULL, 1, 0, 1),
+(133, 131, '报修处理', 'F', NULL, NULL, 'repair:handle', NULL, 2, 0, 1),
+(134, 131, '报修查询', 'F', NULL, NULL, 'repair:query',  NULL, 3, 0, 1);
+
+-- 智能分析(AI)
+INSERT INTO sys_menu(id, parent_id, menu_name, menu_type, path, component, perms, icon, order_num, visible, status) VALUES
+(140, 0,   '智能分析', 'M', '/ai',         NULL,               NULL,                 'MagicStick', 26, 1, 1),
+(141, 140, '场景配置', 'C', '/ai/scene',   'ai/scene/index',   'ai:scene:list',      'Setting',    1, 1, 1),
+(142, 140, '事件记录', 'C', '/ai/event',   'ai/event/index',   'ai:event:list',      'Warning',    2, 1, 1),
+(143, 141, '场景新增', 'F', NULL, NULL, 'ai:scene:add',      NULL, 1, 0, 1),
+(144, 141, '场景修改', 'F', NULL, NULL, 'ai:scene:edit',     NULL, 2, 0, 1),
+(145, 141, '场景删除', 'F', NULL, NULL, 'ai:scene:remove',   NULL, 3, 0, 1),
+(146, 142, '事件处置', 'F', NULL, NULL, 'ai:event:handle',   NULL, 1, 0, 1),
+(147, 142, '事件回调', 'F', NULL, NULL, 'ai:event:callback', NULL, 2, 0, 1);
+
+-- 黑名单
+INSERT INTO sys_menu(id, parent_id, menu_name, menu_type, path, component, perms, icon, order_num, visible, status) VALUES
+(55,  50, '黑名单',   'C', '/access/blacklist', 'access/blacklist/index', 'access:blacklist:list', 'CircleClose', 5, 1, 1),
+(56,  55, '黑名单新增', 'F', NULL, NULL, 'access:blacklist:add',    NULL, 1, 0, 1),
+(57,  55, '黑名单修改', 'F', NULL, NULL, 'access:blacklist:edit',   NULL, 2, 0, 1),
+(58,  55, '黑名单删除', 'F', NULL, NULL, 'access:blacklist:remove', NULL, 3, 0, 1);
+
+-- 消息模板
+INSERT INTO sys_menu(id, parent_id, menu_name, menu_type, path, component, perms, icon, order_num, visible, status) VALUES
+(93,  90, '消息模板', 'C', '/msg/template', 'msg/template/index', 'msg:template:list', 'DocumentCopy', 3, 1, 1),
+(149, 93, '模板新增', 'F', NULL, NULL, 'msg:template:add',    NULL, 1, 0, 1),
+(150, 93, '模板修改', 'F', NULL, NULL, 'msg:template:edit',   NULL, 2, 0, 1),
+(151, 93, '模板删除', 'F', NULL, NULL, 'msg:template:remove', NULL, 3, 0, 1);
+
+-- 设备事件
+INSERT INTO sys_menu(id, parent_id, menu_name, menu_type, path, component, perms, icon, order_num, visible, status) VALUES
+(34,  30, '设备事件', 'C', '/iot/device-event', 'iot/event/index', 'iot:deviceEvent:list', 'Bell', 4, 1, 1),
+(35,  34, '事件处置', 'F', NULL, NULL, 'iot:deviceEvent:control', NULL, 1, 0, 1);
+
+-- 日统计汇总
+INSERT INTO sys_menu(id, parent_id, menu_name, menu_type, path, component, perms, icon, order_num, visible, status) VALUES
+(107, 95, '日报汇总', 'C', '/stat/daily', 'stat/daily/index', 'stat:daily:view', 'DataLine', 5, 1, 1),
+(108, 107, '生成汇总', 'F', NULL, NULL, 'stat:daily:generate', NULL, 1, 0, 1);
+
 -- 角色菜单: 超级管理员拥有全部菜单
 DELETE FROM sys_role_menu;
 SET @rn = 1000;
@@ -125,13 +186,13 @@ SELECT (@rn := @rn + 1), 1, id, NOW() FROM sys_menu;
 SET @rn = 5000;
 INSERT INTO sys_role_menu(id, role_id, menu_id, create_time)
 SELECT (@rn := @rn + 1), 2, id, NOW() FROM sys_menu
-WHERE parent_id IN (0, 20, 30, 32, 40, 50, 60, 65, 70, 80, 90, 95) OR id IN (1, 100);
+WHERE parent_id IN (0, 20, 30, 32, 34, 40, 50, 55, 60, 65, 70, 80, 90, 93, 95, 107, 110, 111, 112, 113, 114, 130, 131, 140, 141, 142) OR id IN (1, 100);
 
 -- 安保人员: 工作台/告警/工单/门禁/访客/视频
 SET @rn = 9000;
 INSERT INTO sys_role_menu(id, role_id, menu_id, create_time)
 SELECT (@rn := @rn + 1), 3, id, NOW() FROM sys_menu
-WHERE id IN (1, 50, 51, 52, 54, 60, 61, 62, 70, 71, 80, 81, 40, 41);
+WHERE id IN (1, 34, 50, 51, 52, 54, 60, 61, 62, 70, 71, 80, 81, 40, 41, 107, 110, 114, 124, 131, 142);
 
 -- ==================== 字典 ====================
 DELETE FROM sys_dict_type;

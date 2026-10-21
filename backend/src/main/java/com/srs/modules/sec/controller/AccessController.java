@@ -60,7 +60,8 @@ public class AccessController {
     @OperLog(module = "门禁管理", businessType = 2)
     @PostMapping("/remote-open")
     public R<Void> remoteOpen(@RequestBody OpenBody body) {
-        accessService.remoteOpen(body.getDeviceId(), body.getCommunityId(), body.getReason());
+        accessService.remoteOpen(body.getDeviceId(), body.getCommunityId(), body.getReason(),
+                body.getTargetType(), body.getTargetId());
         return R.ok("开门指令已下发");
     }
 
@@ -105,5 +106,9 @@ public class AccessController {
         private Long deviceId;
         private Long communityId;
         private String reason;
+        /** 黑名单校验目标类型: 1人员 2车辆 */
+        private Integer targetType;
+        /** 身份证/车牌号, 为空则不校验黑名单 */
+        private String targetId;
     }
 }

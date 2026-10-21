@@ -40,6 +40,9 @@ export const iotApi = {
   deviceLogs: (d: any) => get('/iot/device/log', d),
   saveDevice: (d: any) => (d.id ? put('/iot/device', d) : post('/iot/device', d)),
   restart: (id: any) => post('/iot/device/restart', { id }),
+  deviceEvents: (q: any) => get('/iot/device-event/list', q),
+  reportDeviceEvent: (d: any) => post('/iot/device-event/report', d),
+  handleDeviceEvent: (id: any) => put('/iot/device-event/handle/' + id),
   deviceTypes: (q: any) => get('/iot/device-type/list', q),
   deviceTypeOptions: () => get('/iot/device-type/options'),
   saveDeviceType: (d: any) => (d.id ? put('/iot/device-type', d) : post('/iot/device-type', d)),
@@ -93,7 +96,48 @@ export const secApi = {
   visitorCancel: (id: any) => del('/visitor/invite/' + id),
   vehiclePass: (q: any) => get('/vehicle/pass/list', q),
   vehicleDaily: (c: any, days: any) => get('/vehicle/stat/daily', { communityId: c, days }),
-  gates: (c: any) => get('/vehicle/gate/list', { communityId: c })
+  gates: (c: any) => get('/vehicle/gate/list', { communityId: c }),
+  blacklists: (q: any) => get('/access/blacklist/list', q),
+  saveBlacklist: (d: any) => (d.id ? put('/access/blacklist', d) : post('/access/blacklist', d)),
+  removeBlacklist: (ids: any) => del('/access/blacklist/' + ids)
+}
+
+export const repairApi = {
+  list: (q: any) => get('/repair/list', q),
+  detail: (id: any) => get('/repair/' + id),
+  create: (d: any) => post('/repair', d),
+  dispatch: (d: any) => post('/repair/dispatch', d),
+  start: (id: any) => put('/repair/start', { id }),
+  finish: (id: any, remark?: string) => put('/repair/finish', { id, remark }),
+  evaluate: (id: any, content?: string) => put('/repair/evaluate', { id, content })
+}
+
+export const aiApi = {
+  scenes: (q: any) => get('/ai/scene/list', q),
+  saveScene: (d: any) => (d.id ? put('/ai/scene', d) : post('/ai/scene', d)),
+  removeScene: (ids: any) => del('/ai/scene/' + ids),
+  events: (q: any) => get('/ai/event/list', q),
+  callback: (d: any) => post('/ai/event/callback', d),
+  handleEvent: (id: any, handleStatus: any) => put('/ai/event/handle', { id, handleStatus })
+}
+
+export const patrolApi = {
+  points: (q: any) => get('/patrol/point/list', q),
+  pointOptions: (c: any) => get('/patrol/point/options', { communityId: c }),
+  savePoint: (d: any) => (d.id ? put('/patrol/point', d) : post('/patrol/point', d)),
+  removePoint: (ids: any) => del('/patrol/point/' + ids),
+  routes: (q: any) => get('/patrol/route/list', q),
+  routeOptions: (c: any) => get('/patrol/route/options', { communityId: c }),
+  routeDetail: (id: any) => get('/patrol/route/' + id),
+  saveRoute: (d: any) => (d.route?.id ? put('/patrol/route', d) : post('/patrol/route', d)),
+  removeRoute: (ids: any) => del('/patrol/route/' + ids),
+  plans: (q: any) => get('/patrol/plan/list', q),
+  savePlan: (d: any) => (d.id ? put('/patrol/plan', d) : post('/patrol/plan', d)),
+  removePlan: (ids: any) => del('/patrol/plan/' + ids),
+  records: (q: any) => get('/patrol/record/list', q),
+  checkIn: (d: any) => post('/patrol/record/check-in', d),
+  recordStat: (c: any, date: any) => get('/patrol/record/stat', { communityId: c, date }),
+  markMissing: (date: any) => post('/patrol/record/mark-missing?date=' + date)
 }
 
 export const msgApi = {
@@ -104,7 +148,11 @@ export const msgApi = {
   removeNotice: (ids: any) => del('/msg/notice/' + ids),
   myMessages: () => get('/msg/my/list'),
   unread: () => get('/msg/my/unread'),
-  read: (id: any) => put('/msg/my/read/' + id)
+  read: (id: any) => put('/msg/my/read/' + id),
+  templates: (q: any) => get('/msg/template/list', q),
+  saveTemplate: (d: any) => (d.id ? put('/msg/template', d) : post('/msg/template', d)),
+  removeTemplate: (ids: any) => del('/msg/template/' + ids),
+  renderTemplate: (d: any) => post('/msg/template/render', d)
 }
 
 export const statApi = {
@@ -114,7 +162,9 @@ export const statApi = {
   vehicleTrend: (c: any, days: any) => get('/stat/vehicle/trend', { communityId: c, days }),
   workOrderSummary: (c: any) => get('/stat/workorder/summary', { communityId: c }),
   deviceOnlineRate: (c: any) => get('/stat/device/online-rate', { communityId: c }),
-  safetyIndex: (c: any) => get('/stat/safety-index', { communityId: c })
+  safetyIndex: (c: any) => get('/stat/safety-index', { communityId: c }),
+  dailyList: (q: any) => get('/stat/daily/list', q),
+  generateDaily: (d: any) => post('/stat/daily/generate', d)
 }
 
 export const screenApi = {
