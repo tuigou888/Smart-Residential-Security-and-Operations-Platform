@@ -378,8 +378,8 @@ export const moduleConfig: Record<string, ModuleConfig> = {
       { prop: 'status', label: '状态', type: 'select', options: [{ value: 1, label: '启用' }, { value: 0, label: '停用' }] },
       { prop: 'remark', label: '备注', type: 'textarea' }
     ],
-    createApi: patrolApi.savePoint,
-    updateApi: patrolApi.savePoint,
+    createApi: (d) => patrolApi.savePoint({ ...d, communityId: d.communityId || community() }),
+    updateApi: (d) => patrolApi.savePoint({ ...d, communityId: d.communityId || community() }),
     removeApi: patrolApi.removePoint,
     addText: '新增点位'
   },
@@ -408,8 +408,8 @@ export const moduleConfig: Record<string, ModuleConfig> = {
       { prop: 'effectiveEnd', label: '生效结束', type: 'input' },
       { prop: 'status', label: '状态', type: 'select', options: [{ label: '启用', value: 1 }, { label: '停用', value: 0 }] }
     ],
-    createApi: secApi.saveBlacklist,
-    updateApi: secApi.saveBlacklist,
+    createApi: (d) => secApi.saveBlacklist({ ...d, communityId: d.communityId || community() }),
+    updateApi: (d) => secApi.saveBlacklist({ ...d, communityId: d.communityId || community() }),
     removeApi: secApi.removeBlacklist,
     addText: '新增黑名单'
   },
@@ -442,8 +442,8 @@ export const moduleConfig: Record<string, ModuleConfig> = {
       { prop: 'enableTimeEnd', label: '启用结束', type: 'input' },
       { prop: 'status', label: '状态', type: 'select', options: [{ label: '启用', value: 1 }, { label: '停用', value: 0 }] }
     ],
-    createApi: aiApi.saveScene,
-    updateApi: aiApi.saveScene,
+    createApi: (d) => aiApi.saveScene({ ...d, communityId: d.communityId || community() }),
+    updateApi: (d) => aiApi.saveScene({ ...d, communityId: d.communityId || community() }),
     removeApi: aiApi.removeScene,
     addText: '新增场景'
   }

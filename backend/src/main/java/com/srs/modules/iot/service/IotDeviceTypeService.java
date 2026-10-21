@@ -24,13 +24,15 @@ public class IotDeviceTypeService extends ServiceImpl<IotDeviceTypeMapper, IotDe
     public IPage<IotDeviceType> page(PageQuery q, Long communityId, String typeName) {
         return baseMapper.selectPage(new Page<>(q.getPageNum(), q.getPageSize()),
                 new LambdaQueryWrapper<IotDeviceType>()
-                        .eq(communityId != null, IotDeviceType::getCommunityId, communityId)
+                        // 社区可见"本小区类型 + 全局类型(community_id 为空)"
+                        .and(communityId != null, w -> w.eq(IotDeviceType::getCommunityId, communityId)
+                                .or().isNull(IotDeviceType::getCommunityId))
                         .like(StringUtils.hasText(typeName), IotDeviceType::getTypeName, typeName)
                         .orderByAsc(IotDeviceType::getOrderNum)
                         .orderByAsc(IotDeviceType::getId));
     }
 
-    /** 下拉选项: 仅启用的类型 */
+    /** 下拉选项: 仅启用的类型(含全局类型) */
     public List<IotDeviceType> options() {
         return baseMapper.selectList(new LambdaQueryWrapper<IotDeviceType>()
                 .eq(IotDeviceType::getStatus, 1)
