@@ -1,0 +1,106 @@
+server:
+  port: 8088
+  servlet:
+    context-path: /
+  tomcat:
+    max-http-form-post-size: 20MB
+
+spring:
+  application:
+    name: srs-platform
+  profiles:
+    active: dev
+  jackson:
+    default-property-inclusion: non_null
+    time-zone: Asia/Shanghai
+    date-format: yyyy-MM-dd HH:mm:ss
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 20MB
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/srs_platform?useUnicode=true&characterEncoding=utf-8&connectionCollation=utf8mb4_general_ci&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&rewriteBatchedStatements=true
+    username: root
+    password: 123456
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 30
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
+      database: 0
+      timeout: 3s
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+  global-config:
+    db-config:
+      id-type: assign_id
+      # 逻辑删除在实体上通过 @TableLogic 标注(DelEntity), 不做全局配置
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+      table-prefix: ''
+  mapper-locations: classpath*:mapper/**/*.xml
+
+# 平台自定义配置
+srs:
+  # 缓存开关: false 或 Redis 不可用时自动降级为无缓存(不影响业务)
+  cache:
+    enabled: true
+  # 敏感数据加密(AES/ECB/PKCS5Padding, 密钥长度须为 16/24/32)
+  crypto:
+    enabled: true
+    aes-key: SrsPlatform@2026
+  file:
+    upload-path: ./data/upload
+    access-prefix: /api/v1/file/download/
+  security:
+    # JWT(RS256) 密钥持久化路径, 不存在时自动生成
+    jwk-path: ./data/jwt-jwk.json
+    access-token-ttl: 2h
+    refresh-token-ttl: 24h
+    # 免鉴权路径
+    permit-paths:
+      - /api/v1/auth/**
+      - /actuator/health/**
+      - /v3/api-docs/**
+      - /swagger-ui/**
+      - /swagger-ui.html
+      - /error
+  # 流媒体(ZLMediaKit)与设备接入: 一期未接入时返回演示地址
+  media:
+    enabled: false
+    base-url: http://127.0.0.1:8080
+    http-flv-port: 80
+  alarm:
+    auto-dispatch: false
+  screen:
+    refresh-seconds: 30
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: method
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always
+
+logging:
+  level:
+    root: INFO
+    com.srs: INFO

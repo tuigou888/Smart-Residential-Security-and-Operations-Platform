@@ -1,0 +1,9 @@
+node_modules/
+target/
+dist/
+data/
+.superpowers/
+*.log
+.DS_Store
+.idea/
+.vscode/
