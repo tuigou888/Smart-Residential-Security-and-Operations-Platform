@@ -109,6 +109,12 @@ INSERT INTO sys_menu(id, parent_id, menu_name, menu_type, path, component, perms
 (98,  95, '通行分析', 'C', '/stat/access',     'stat/access/index',    'stat:access:view',    'Connection',3,1,1),
 (99,  95, '设备分析', 'C', '/stat/device',     'stat/device/index',    'stat:device:view',    'Cpu',     4, 1, 1);
 
+-- 设备类型按钮权限
+INSERT INTO sys_menu(id, parent_id, menu_name, menu_type, path, component, perms, icon, order_num, visible, status) VALUES
+(104, 32, '设备类型新增', 'F', NULL, NULL, 'iot:deviceType:add',    NULL, 1, 0, 1),
+(105, 32, '设备类型修改', 'F', NULL, NULL, 'iot:deviceType:edit',   NULL, 2, 0, 1),
+(106, 32, '设备类型删除', 'F', NULL, NULL, 'iot:deviceType:remove', NULL, 3, 0, 1);
+
 -- 角色菜单: 超级管理员拥有全部菜单
 DELETE FROM sys_role_menu;
 SET @rn = 1000;
@@ -119,7 +125,7 @@ SELECT (@rn := @rn + 1), 1, id, NOW() FROM sys_menu;
 SET @rn = 5000;
 INSERT INTO sys_role_menu(id, role_id, menu_id, create_time)
 SELECT (@rn := @rn + 1), 2, id, NOW() FROM sys_menu
-WHERE parent_id IN (0, 20, 30, 40, 50, 60, 65, 70, 80, 90, 95) OR id IN (1, 100);
+WHERE parent_id IN (0, 20, 30, 32, 40, 50, 60, 65, 70, 80, 90, 95) OR id IN (1, 100);
 
 -- 安保人员: 工作台/告警/工单/门禁/访客/视频
 SET @rn = 9000;

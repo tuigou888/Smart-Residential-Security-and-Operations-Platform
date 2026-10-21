@@ -214,6 +214,8 @@ void removeRoutes(List<Long> ids)                 // 级联删 route_point；有
 
 三表均含 `del_flag` → 继承 `DelEntity`；`@TableName("pat_point")` 等；`@TableId(type = IdType.ASSIGN_ID)`；字段按 DDL 逐一映射（`PatRoutePoint` 另含 `communityId`，DDL 可空）。
 
+> **预检裁定：** `IotDeviceType` 当前继承 `BaseEntity`，但表含 `del_flag`；任务 1 中改为继承 `DelEntity`，否则删除为物理删除且与全局约定不符。
+
 - [ ] **步骤 2：Mapper**
 
 ```java
@@ -519,7 +521,12 @@ boolean isBlocked(Long communityId, Integer type, String targetId)  // type 1人
 
 - [ ] **步骤 2：接入远程开门（审查重点 1 的配套）**
 
-`AccessService.remoteOpen(...)` 在写通行记录前：若请求体含 `personId/identity` 且 `isBlocked(...)` 为 true，抛 `BizException.forbidden("该人员在黑名单，禁止开门")`。若请求体无该字段则不阻断（保持兼容）。
+现有 `AccessController.OpenBody` 只有 `deviceId/communityId/reason`。追加可选字段 `targetId`、`targetType`（1 人员 / 2 车辆，默认 1），并把它传入 `AccessService.remoteOpen` 的新重载：
+```java
+public void remoteOpen(Long deviceId, Long communityId, String reason,
+                       Integer targetType, String targetId)
+```
+重载内：`targetId` 非空且 `isBlocked(record.communityId, targetType, targetId)` 为 true 时抛 `BizException.forbidden("该目标在黑名单，禁止开门")`；为兼容旧调用保留三参方法委托到五参（传 null）。
 
 - [ ] **步骤 3：Controller + 编译**
 
@@ -711,7 +718,8 @@ int generateAll(LocalDate date)
 | 94 | 93 | add/edit/remove | F | NULL | NULL | `msg:template:*` | 1-3 |
 | 34 | 30 | 设备事件 | C | /iot/device-event | iot/event/index | iot:deviceEvent:list | 4 |
 | 35 | 34 | 处置 | F | NULL | NULL | `iot:deviceEvent:control` | 1 |
-| 98 | 95 | 日报汇总 | C | /stat/daily | stat/daily/index | stat:daily:view | 5 |
+| 107 | 95 | 日报汇总 | C | /stat/daily | stat/daily/index | stat:daily:view | 5 |
+| 108 | 107 | 生成汇总 | F | NULL | NULL | stat:daily:generate | 1 |
 
 `02_init_data.sql` 需幂等：使用 `INSERT ... ON DUPLICATE KEY UPDATE menu_name=VALUES(menu_name)` 或先 `DELETE FROM sys_menu WHERE id BETWEEN 110 AND 148`。
 

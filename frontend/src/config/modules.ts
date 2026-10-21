@@ -189,12 +189,35 @@ export const moduleConfig: Record<string, ModuleConfig> = {
   },
   '/iot/device-type': {
     title: '设备类型',
-    fetch: (p) => wrap((q) => iotApi.devices({ ...q, pageSize: 999 }))(p),
+    fetch: (p) => wrap((q) => iotApi.deviceTypes(q))(p),
     columns: [
       { prop: 'typeName', label: '类型名称', width: 160 },
       { prop: 'typeCode', label: '编码', width: 140 },
-      { prop: 'status', label: '状态', width: 80, formatter: (_: any, r: any) => (r.status === 1 ? '启用' : '停用') }
-    ]
+      { prop: 'orderNum', label: '排序', width: 80 },
+      { prop: 'status', label: '状态', width: 80, formatter: (_: any, r: any) => (r.status === 1 ? '启用' : '停用') },
+      { prop: 'remark', label: '备注', minWidth: 160 }
+    ],
+    searchFields: [
+      { prop: 'typeName', label: '类型名称' },
+      { prop: 'status', label: '状态', type: 'select', options: [
+        { label: '启用', value: 1 }, { label: '停用', value: 0 }
+      ] }
+    ],
+    formFields: [
+      { prop: 'typeCode', label: '类型编码', required: true, type: 'input' },
+      { prop: 'typeName', label: '类型名称', required: true, type: 'input' },
+      { prop: 'parentId', label: '父类型ID', type: 'number' },
+      { prop: 'icon', label: '图标', type: 'input' },
+      { prop: 'orderNum', label: '排序', type: 'number' },
+      { prop: 'status', label: '状态', type: 'select', options: [
+        { label: '启用', value: 1 }, { label: '停用', value: 0 }
+      ] },
+      { prop: 'remark', label: '备注', type: 'textarea' }
+    ],
+    createApi: iotApi.saveDeviceType,
+    updateApi: iotApi.saveDeviceType,
+    removeApi: iotApi.removeDeviceType,
+    addText: '新增类型'
   },
   '/video/channel': {
     title: '视频通道',

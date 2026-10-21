@@ -39,7 +39,11 @@ export const iotApi = {
   deviceTypeStat: (c: any) => get('/iot/device/type-stat', { communityId: c }),
   deviceLogs: (d: any) => get('/iot/device/log', d),
   saveDevice: (d: any) => (d.id ? put('/iot/device', d) : post('/iot/device', d)),
-  restart: (id: any) => post('/iot/device/restart', { id })
+  restart: (id: any) => post('/iot/device/restart', { id }),
+  deviceTypes: (q: any) => get('/iot/device-type/list', q),
+  deviceTypeOptions: () => get('/iot/device-type/options'),
+  saveDeviceType: (d: any) => (d.id ? put('/iot/device-type', d) : post('/iot/device-type', d)),
+  removeDeviceType: (ids: any) => del('/iot/device-type/' + ids)
 }
 
 export const videoApi = {
