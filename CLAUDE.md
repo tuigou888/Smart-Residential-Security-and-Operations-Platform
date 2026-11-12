@@ -10,7 +10,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `frontend/` — Vue 3.5 + TypeScript + Vite 5 + Element Plus + Pinia,开发端口 5175(strictPort;5173 被本机其他项目 Vite 长期占用),代理 `/api` → 8088
 - `sql/` — 建库脚本:`01_schema.sql`(DDL,48 张表)→ `02_init_data.sql`(初始数据)。初始演示账号见 `02_init_data.sql`，不要在代码或提交中追加新的明文凭据
 - `需求/` — 建设方案、技术选型等需求文档
-- `功能实现情况报告.md` — 各模块实现度审计报告(2026-09-15),含已知缺陷清单、桩接口清单、未实现模块清单。改动前先读它,避免重复踩已记录的问题
+- `docs/` — `demo-readiness-*.md`(演示就绪性评估)、`modules-roadmap-*.md`(二期路线图)、`superpowers/`(开发计划归档)
+- `功能实现情况报告.md` — 各模块实现度审计报告(2026-09-15 首发,2026-10-21 更新:原待办模块已全部落地),含已知缺陷清单、桩接口清单。改动前先读它,避免重复踩已记录的问题
 
 项目内注释、UI 文案、文档均为中文;新增代码保持中文注释风格。
 
@@ -23,7 +24,7 @@ mvn test                     # 运行现有测试;当前仓库没有 src/test �
 mvn clean package            # 打包为 srs-platform.jar
 
 # 前端(在 frontend/ 下)
-npm run dev                  # Vite 开发服务器 :5173
+npm run dev                  # Vite 开发服务器 :5175(strictPort)
 npm run typecheck            # vue-tsc --noEmit,提交前必须通过
 npm run build                # 产物输出到 dist/
 
@@ -74,7 +75,7 @@ backend/fe-smoke.sh          # 前端依赖接口冒烟:校验前端实际调用
 
 - `api/request.ts` — axios 封装,baseURL `/api/v1`,自动解包 `R<T>`(只返回 data),业务码 401/HTTP 401/403 清 token 跳登录。token 存 localStorage `accessToken`
 - `api/index.ts` — 全部接口按域分组(sysApi/baseApi/iotApi/videoApi/secApi/msgApi/alarmApi/statApi...),新接口加在这里
-- 动态路由:路由守卫拉 `/auth/info` 取菜单树,按 `menu.path` 注册路由。`router/index.ts` 的 `componentMap` 把 `sys_menu.component` 字符串映射到专用页面(共 15 个);无映射的走 `views/generic/index.vue` 通用 CRUD,再兜底 placeholder
+- 动态路由:路由守卫拉 `/auth/info` 取菜单树,按 `menu.path` 注册路由。`router/index.ts` 的 `componentMap` 把 `sys_menu.component` 字符串映射到专用页面(共 23 个);无映射的走 `views/generic/index.vue` 通用 CRUD,再兜底 placeholder
 - **新增页面 = 在 `componentMap` 加映射写专用页面,或在 `config/modules.ts` 加一条 `moduleConfig`**。moduleConfig 以路由 path 为 key,声明 columns/searchFields/formFields 和 fetch/createApi/updateApi/removeApi,`generic/CrudPage.vue` 据此渲染列表+弹窗表单;只配 fetch 就是只读页
 - `config/modules.ts` 的 `withCommunity()` 会自动把顶栏切换的当前小区 id(`appStore.communityId`)注入查询参数
 
