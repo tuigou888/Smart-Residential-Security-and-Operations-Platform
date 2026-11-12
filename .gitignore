@@ -7,3 +7,6 @@ data/
 .DS_Store
 .idea/
 .vscode/
+
+# Claude Code 本地权限配置
+.claude/settings.local.json
